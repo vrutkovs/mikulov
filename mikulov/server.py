@@ -13,7 +13,7 @@ root.setLevel(logging.DEBUG)
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter(
-    '%(name)-15s: %(filename)s:%(lineno)-3d: %(message)s')
+    '%(name)-15s: %(filename)-20s:%(lineno)-3d: %(message)s')
 ch.setFormatter(formatter)
 root.addHandler(ch)
 logger = logging.getLogger('frontend')
