@@ -21,6 +21,10 @@ EXTRAS = [
 ]
 
 
+class PostAlreadyExists(Exception):
+    pass
+
+
 async def post_digest(title, text):
     m = hashlib.sha256()
     m.update(bytes(title, 'utf-8'))
@@ -31,11 +35,9 @@ async def post_digest(title, text):
 async def save_post(title, text, digest, url_part):
     # Create a directory
     directory = os.path.join(POSTS_PATH, url_part)
-    try:
-        os.makedirs(directory)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+    if os.path.exists(directory):
+        raise PostAlreadyExists()
+    os.makedirs(directory)
 
     # Generate a secret access token
     token = uuid4().hex
