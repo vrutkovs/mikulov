@@ -5,7 +5,7 @@ from setuptools import setup
 from pip.req import parse_requirements
 from pip.download import PipSession
 
-with open('README.rst') as readme_file:
+with open('README.md') as readme_file:
     readme = readme_file.read()
 
 pip_session = PipSession()
