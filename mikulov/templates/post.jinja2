@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block content %}
-  <h3>Your new post is <a href="/{{ url }}">here</a></h3>
+  <h3 class=".f3">Your new post is <a href="/{{ url }}">here</a></h3>
 
-  <h4>Use the following URL to remove post:</h4>
-  <a href="/{{ url }}/{{ token }}/delete">Delete post</a></br>
+  Use the following URL to remove post: <a href="/{{ url }}/{{ token }}/delete">Delete post</a></br>
+  Please store it somewhere safe, as it <b>WON'T BE DISPLAYED AGAIN</b>
+  </div>
 {% endblock %}

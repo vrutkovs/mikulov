@@ -28,7 +28,6 @@ async def root(request):
 async def new_post(request):
     logger.info("new_post")
     data = await request.post()
-    logger.info("data: %s", data)
     token, url = await backend.make_a_post(data)
     return {
         "token": token,

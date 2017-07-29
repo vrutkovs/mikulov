@@ -15,6 +15,10 @@ TITLE_PATH = "title"
 MARKDOWN_PATH = "post.md"
 HTML_PATH = "index.html"
 TOKEN_PATH = "token"
+EXTRAS = [
+    "break-on-newline", "fenced-code-blocks", "header-ids", "smarty-pants", "target-blank-links",
+    "toc"
+]
 
 
 async def post_digest(title, text):
@@ -41,7 +45,7 @@ async def save_post(title, text, digest, url_part):
     async with aiofiles.open(token_path, mode='w') as f:
         await f.write(token)
 
-    # Save title to title
+    # Save title to title file
     title_path = os.path.join(directory, TITLE_PATH)
     async with aiofiles.open(title_path, mode='w') as f:
         await f.write(title)
@@ -51,7 +55,7 @@ async def save_post(title, text, digest, url_part):
     async with aiofiles.open(markdown_post_path, mode='w') as f:
         await f.write(text)
 
-    # TODO: Convert to HTML
+    # Convert markdown to HTML and save it
     html_post_path = os.path.join(directory, HTML_PATH)
     await convert_markdown(text, html_post_path)
 
@@ -119,7 +123,7 @@ async def delete_post(digest, slug):
 
 
 async def convert_markdown(text, html_post_path):
-    html = markdown2.markdown(text)
+    html = markdown2.markdown(text, extras=EXTRAS)
     async with aiofiles.open(html_post_path, mode='w') as f:
         await f.write(html)
 
