@@ -10,7 +10,7 @@ Mikulov
      :target: https://pyup.io/repos/github/vrutkovs/mikulov/
      :alt: Updates
 
-Mikulov is a self-hosted anonymous blog platform.
+Mikulov is a minimalistic file-based self-hosted anonymous publishing platform.
 
 Try it out on http://mikulov.aracan.ga/
 
@@ -21,3 +21,8 @@ How to Run
 --------
 
 * Build and run the Docker image
+
+Credits:
+--------
+
+* `slugify` from http://blog.dolphm.com/slugify-a-string-in-python/

@@ -17,7 +17,7 @@ test_requirements = [str(x.req) for x in parsed_reqs_dev]
 setup(
     name='mikulov',
     version='0.1.0',
-    description="Mikulov is a self-hosted anonymous blog platform",
+    description="Mikulov is a minimalistic file-based self-hosted anonymous publishing platform",
     long_description=readme,
     author="Vadim Rutkovsky",
     author_email='vrutkovs@redhat.com',
@@ -35,7 +35,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     test_suite='tests',
     tests_require=test_requirements
