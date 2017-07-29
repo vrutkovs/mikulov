@@ -7,7 +7,6 @@ import sys
 import backend
 
 
-logger = logging.getLogger(__name__)
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 

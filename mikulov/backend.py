@@ -1,29 +1,20 @@
 # -*- coding: utf-8 -*-
 import logging
-import sys
 import hashlib
 import re
 
-
-logger = logging.getLogger(__name__)
-root = logging.getLogger()
-root.setLevel(logging.DEBUG)
-
-ch = logging.StreamHandler(sys.stdout)
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(
-    '%(name)-15s: %(filename)s:%(lineno)-3d: %(message)s')
-ch.setFormatter(formatter)
-root.addHandler(ch)
 logger = logging.getLogger('backend')
 
 
 async def post_digest(title, text):
     m = hashlib.sha256()
-    m.update(title)
-    m.update(text)
+    m.update(bytes(title, 'utf-8'))
+    m.update(bytes(text, 'utf-8'))
     return m.hexdigest()[:8]
 
+async def save_post(title, text, digest, url_part):
+
+    return True
 
 async def make_a_post(data):
     logger.info("make_a_post")
@@ -34,6 +25,9 @@ async def make_a_post(data):
     digest = await post_digest(title, text)
     # TODO: throw exception if the folder already exists
     url_part = "{0}-{1}".format(digest, slug)
+
+    result = await save_post(title, text, digest, url_part)
+    assert result
 
     return (
         "wubbadubbadubdubs",
