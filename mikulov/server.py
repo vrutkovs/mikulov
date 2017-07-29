@@ -42,11 +42,27 @@ async def display_post(request):
     logger.info("display_post")
     digest = request.match_info['digest']
     slug = request.match_info['slug']
-    title, contents = await backend.get_post(digest, slug)
-    return {
-        'title': title,
-        'contents': contents
-    }
+    try:
+        title, contents = await backend.get_post(digest, slug)
+        return {
+            'title': title,
+            'contents': contents
+        }
+    except Exception:
+        raise web.HTTPNotFound()
+
+
+@aiohttp_jinja2.template('delete.jinja2')
+async def delete_post(request):
+    logger.info("display_post")
+    digest = request.match_info['digest']
+    slug = request.match_info['slug']
+    token = request.match_info['token']
+    if await backend.is_valid_token(digest, slug, token):
+        title, contents = await backend.delete_post(digest, slug)
+        return {'title': title, 'contents': contents}
+    else:
+        raise web.HTTPFound('/{digest}-{slug}'.format(digest=digest, slug=slug))
 
 
 app = web.Application(debug=True)
@@ -56,5 +72,6 @@ app.router.add_static('/static/', path='static', show_index=True)
 app.router.add_route('*', '/', root)
 app.router.add_route('POST', '/post', new_post)
 app.router.add_route('GET', '/{digest}-{slug}', display_post)
+app.router.add_route('GET', '/{digest}-{slug}/{token}/delete', delete_post)
 
 web.run_app(app)

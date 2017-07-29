@@ -5,6 +5,7 @@ import re
 import aiofiles
 import os
 import errno
+import shutil
 from uuid import uuid4
 
 logger = logging.getLogger('backend')
@@ -49,17 +50,15 @@ async def save_post(title, text, digest, url_part):
     async with aiofiles.open(markdown_post_path, mode='w') as f:
         await f.write(text)
 
-    #TODO: Convert to HTML
+    # TODO: Convert to HTML
 
     return (token, url_part)
 
 
 async def get_post(digest, slug):
     logger.info("get_post")
-    url_part = "{0}-{1}".format(digest, slug)
-    directory = os.path.join(POSTS_PATH, url_part)
-    if not os.path.exists(directory):
-        raise RuntimeError("No such post")
+
+    directory = await get_post_directory(digest, slug)
 
     title_post_path = os.path.join(directory, TITLE_PATH)
     async with aiofiles.open(title_post_path, mode='r') as f:
@@ -82,6 +81,38 @@ async def make_a_post(data):
     url_part = "{0}-{1}".format(digest, slug)
 
     return await save_post(title, text, digest, url_part)
+
+
+async def get_post_directory(digest, slug):
+    url_part = "{0}-{1}".format(digest, slug)
+    directory = os.path.join(POSTS_PATH, url_part)
+    if not os.path.exists(directory):
+        raise RuntimeError("No such post")
+    return directory
+
+
+async def is_valid_token(digest, slug, token):
+    logger.info("is_valid_token %s %s %s", digest, slug, token)
+    try:
+        directory = await get_post_directory(digest, slug)
+    except RuntimeError:
+        return False
+
+    token_path = os.path.join(directory, TOKEN_PATH)
+    logger.info("token_path %s" % token_path)
+    async with aiofiles.open(token_path, mode='r') as f:
+        expected_token = await f.read()
+
+    result = token.strip() == expected_token.strip()
+    logger.info("result %s" % result)
+    return result
+
+
+async def delete_post(digest, slug):
+    directory = await get_post_directory(digest, slug)
+    title, contents = await get_post(digest, slug)
+    shutil.rmtree(directory)
+    return (title, contents)
 
 
 async def slugify(s):
