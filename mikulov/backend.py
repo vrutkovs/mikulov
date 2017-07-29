@@ -4,12 +4,13 @@ import hashlib
 import re
 import aiofiles
 import os
-import errno
 import shutil
 import markdown2
 from uuid import uuid4
+from aiohttp import web
 
 logger = logging.getLogger('backend')
+
 POSTS_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "posts")
 TITLE_PATH = "title"
 MARKDOWN_PATH = "post.md"
@@ -89,7 +90,10 @@ async def make_a_post(data):
     digest = await post_digest(title, text)
     url_part = "{0}-{1}".format(digest, slug)
 
-    return await save_post(title, text, digest, url_part)
+    try:
+        return await save_post(title, text, digest, url_part)
+    except PostAlreadyExists:
+        raise web.HTTPFound('/{url_part}'.format(url_part=url_part))
 
 
 async def get_post_directory(digest, slug):
