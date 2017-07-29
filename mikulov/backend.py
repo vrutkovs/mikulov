@@ -6,6 +6,7 @@ import aiofiles
 import os
 import errno
 import shutil
+import markdown2
 from uuid import uuid4
 
 logger = logging.getLogger('backend')
@@ -51,6 +52,8 @@ async def save_post(title, text, digest, url_part):
         await f.write(text)
 
     # TODO: Convert to HTML
+    html_post_path = os.path.join(directory, HTML_PATH)
+    await convert_markdown(text, html_post_path)
 
     return (token, url_part)
 
@@ -64,8 +67,8 @@ async def get_post(digest, slug):
     async with aiofiles.open(title_post_path, mode='r') as f:
         title = await f.read()
 
-    markdown_post_path = os.path.join(directory, MARKDOWN_PATH)
-    async with aiofiles.open(markdown_post_path, mode='r') as f:
+    html_post_path = os.path.join(directory, HTML_PATH)
+    async with aiofiles.open(html_post_path, mode='r') as f:
         contents = await f.read()
 
     return (title, contents)
@@ -113,6 +116,12 @@ async def delete_post(digest, slug):
     title, contents = await get_post(digest, slug)
     shutil.rmtree(directory)
     return (title, contents)
+
+
+async def convert_markdown(text, html_post_path):
+    html = markdown2.markdown(text)
+    async with aiofiles.open(html_post_path, mode='w') as f:
+        await f.write(html)
 
 
 async def slugify(s):
