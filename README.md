@@ -19,5 +19,5 @@ License: MIT
 * [https://aiohttp.readthedocs.io/en/stable/](aiohttp)
 * [https://github.com/Tinche/aiofiles](aiofiles)
 * [https://github.com/trentm/python-markdown2](python-markdown2)
-* [http://tachyons.io/](Tachyon CSS)
+* [http://tachyons.io](Tachyon CSS)
 * [http://blog.dolphm.com/slugify-a-string-in-python/](`slugify`) function
