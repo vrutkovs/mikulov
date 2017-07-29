@@ -4,6 +4,7 @@ import aiohttp_jinja2
 import jinja2
 import logging
 import sys
+import backend
 
 
 logger = logging.getLogger(__name__)
@@ -16,7 +17,7 @@ formatter = logging.Formatter(
     '%(name)-15s: %(filename)s:%(lineno)-3d: %(message)s')
 ch.setFormatter(formatter)
 root.addHandler(ch)
-logger = logging.getLogger('mikulov')
+logger = logging.getLogger('frontend')
 
 
 @aiohttp_jinja2.template('root.jinja2')
@@ -27,7 +28,13 @@ async def root(request):
 @aiohttp_jinja2.template('post.jinja2')
 async def new_post(request):
     logger.info("new_post")
-    return {}
+    data = await request.post()
+    logger.info("data: %s", data)
+    token, url = await backend.make_a_post(data)
+    return {
+        "token": token,
+        "url": url
+    }
 
 app = web.Application(debug=True)
 aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('templates'))
