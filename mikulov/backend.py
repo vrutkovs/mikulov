@@ -2,8 +2,17 @@
 import logging
 import hashlib
 import re
+import aiofiles
+import os
+import errno
+from uuid import uuid4
 
 logger = logging.getLogger('backend')
+POSTS_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "posts")
+TITLE_PATH = "title"
+MARKDOWN_PATH = "post.md"
+HTML_PATH = "index.html"
+TOKEN_PATH = "token"
 
 
 async def post_digest(title, text):
@@ -12,9 +21,38 @@ async def post_digest(title, text):
     m.update(bytes(text, 'utf-8'))
     return m.hexdigest()[:8]
 
-async def save_post(title, text, digest, url_part):
 
-    return True
+async def save_post(title, text, digest, url_part):
+    # Create a directory
+    directory = os.path.join(POSTS_PATH, url_part)
+    try:
+        os.makedirs(directory)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+    # Generate a secret access token
+    token = uuid4().hex
+
+    # Write it
+    token_path = os.path.join(directory, TOKEN_PATH)
+    async with aiofiles.open(token_path, mode='w') as f:
+        await f.write(token)
+
+    # Save title to title
+    title_path = os.path.join(directory, TITLE_PATH)
+    async with aiofiles.open(title_path, mode='w') as f:
+        await f.write(title)
+
+    # Save markdown to post.md
+    markdown_post_path = os.path.join(directory, MARKDOWN_PATH)
+    async with aiofiles.open(markdown_post_path, mode='w') as f:
+        await f.write(text)
+
+    #TODO: Convert to HTML
+
+    return (token, url_part)
+
 
 async def make_a_post(data):
     logger.info("make_a_post")
@@ -23,16 +61,9 @@ async def make_a_post(data):
 
     slug = await slugify(title)
     digest = await post_digest(title, text)
-    # TODO: throw exception if the folder already exists
     url_part = "{0}-{1}".format(digest, slug)
 
-    result = await save_post(title, text, digest, url_part)
-    assert result
-
-    return (
-        "wubbadubbadubdubs",
-        url_part
-    )
+    return await save_post(title, text, digest, url_part)
 
 
 async def slugify(s):
