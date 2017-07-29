@@ -3,9 +3,20 @@ from aiohttp import web
 import aiohttp_jinja2
 import jinja2
 import logging
+import sys
 
 
 logger = logging.getLogger(__name__)
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter(
+    '%(name)-25s: %(filename)s:%(lineno)-3d: %(message)s')
+ch.setFormatter(formatter)
+root.addHandler(ch)
+logger = logging.getLogger('mikulov')
 
 
 @aiohttp_jinja2.template('root.jinja2')
