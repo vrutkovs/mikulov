@@ -5,7 +5,7 @@
 Mikulov is a minimalistic file-based self-hosted anonymous publishing platform.
 Think self-hosted https://telegra.ph
 
-Try it out on http://mikulov.aracan.ga/
+Try it out on https://mikulov.aracan.ga/
 
 License: MIT
 
