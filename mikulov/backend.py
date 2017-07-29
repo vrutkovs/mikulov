@@ -151,4 +151,4 @@ async def slugify(s):
     # "some articles title"
     # "some-articles-title"
     s = s.replace(' ', '-')
-    return s
+    return s[:60]
