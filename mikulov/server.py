@@ -62,7 +62,9 @@ async def delete_post(request):
         raise web.HTTPFound('/{digest}-{slug}'.format(digest=digest, slug=slug))
 
 
-app = web.Application(debug=True)
+
+debug = 'DEBUG' in os.environ.keys()
+app = web.Application(debug=debug)
 aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('templates'))
 app.router.add_static('/static/', path='static', show_index=True)
 
