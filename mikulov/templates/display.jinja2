@@ -1,8 +1,11 @@
-<html>
-  <head>
-    <title>{{ title }}</title>
-  </head>
-  <body>
-    {{ contents }}
-  </body>
-</html>
+{% extends "base.jinja2" %}
+
+{% block head %}
+  <title>{{ title }}</title>
+{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+
+  {{ contents }}
+{% endblock %}

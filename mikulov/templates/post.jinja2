@@ -1,13 +1,12 @@
-<html>
-  <head>
-    <title>Mikulov - anonymous blog platform</title>
-  </head>
-  <body>
-    <h3>Your new post is <a href="/{{ url }}">here</a></h3>
+{% extends "base.jinja2" %}
 
-    <h4>WARNING: Save the following URLs as they will not be shown again</h4>
+{% block head %}
+  <title>Mikulov - anonymous blog platform</title>
+{% endblock %}
 
-    <a href="/{{ url }}/{{ token }}/delete">Delete post</a></br>
-    <!-- <a href="/{{ url }}/{{ token }}/edit">Edit post</a></br> -->
-  </body>
-</html>
+{% block content %}
+  <h3>Your new post is <a href="/{{ url }}">here</a></h3>
+
+  <h4>Use the following URL to remove post:</h4>
+  <a href="/{{ url }}/{{ token }}/delete">Delete post</a></br>
+{% endblock %}

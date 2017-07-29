@@ -1,14 +1,18 @@
-<html>
-  <head>
-    <title>Mikulov - anonymous blog platform</title>
-  </head>
-  <body>
-    <form action="/post" method="post" accept-charset="utf-8"
-          enctype="application/x-www-form-urlencoded">
-      <input type="text" id="title" name="title" placeholder="Post title" value="Test title"/>
-      <input type="submit" value="Submit"/><br>
+{% extends "base.jinja2" %}
 
-      <textarea id="text" name="text" rows="10" cols="100">Post goes here</textarea>
-    </form>
-  </body>
-</html>
+{% block head %}
+  <title>Mikulov - anonymous blog platform</title>
+{% endblock %}
+
+{% block content %}
+  <form action="/post" method="post" accept-charset="utf-8"
+        enctype="application/x-www-form-urlencoded">
+    <div class="fl w-90">
+      <input type="text" id="title" name="title" placeholder="Post title" value="Test title"/>
+    </div>
+    <
+    <input type="submit" value="Submit"/><br>
+
+    <textarea id="text" name="text" rows="10" cols="100">Post goes here</textarea>
+  </form>
+{% endblock %}

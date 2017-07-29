@@ -1,8 +1,9 @@
-<html>
-  <head>
-    <title>{{ title }}</title>
-  </head>
-  <body>
-    <h3>Post {{ title }} was deleted</h3>
-  </body>
-</html>
+{% extends "base.jinja2" %}
+
+{% block head %}
+  <title>{{ title }}</title>
+{% endblock %}
+
+{% block content %}
+  <h3>Post {{ title }} was deleted</h3>
+{% endblock %}

@@ -9,7 +9,7 @@ RUN dnf update -y --refresh && \
 ADD . /mikulov
 
 RUN cd /mikulov && \
-    #npm install patternfly@3.25.1 --save --prefix=mikulov/static && \
+    npm install --save-dev tachyons@4.7.0 --prefix=mikulov/static && \
     pip3 install -r requirements.txt && \
     git log -1 --pretty=format:'%h' --abbrev-commit > mikulov/templates/commit.jinja2
 
