@@ -36,11 +36,25 @@ async def new_post(request):
         "url": url
     }
 
+
+@aiohttp_jinja2.template('display.jinja2')
+async def display_post(request):
+    logger.info("display_post")
+    digest = request.match_info['digest']
+    slug = request.match_info['slug']
+    title, contents = await backend.get_post(digest, slug)
+    return {
+        'title': title,
+        'contents': contents
+    }
+
+
 app = web.Application(debug=True)
 aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('templates'))
 app.router.add_static('/static/', path='static', show_index=True)
 
 app.router.add_route('*', '/', root)
 app.router.add_route('POST', '/post', new_post)
+app.router.add_route('GET', '/{digest}-{slug}', display_post)
 
 web.run_app(app)

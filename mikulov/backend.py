@@ -54,6 +54,24 @@ async def save_post(title, text, digest, url_part):
     return (token, url_part)
 
 
+async def get_post(digest, slug):
+    logger.info("get_post")
+    url_part = "{0}-{1}".format(digest, slug)
+    directory = os.path.join(POSTS_PATH, url_part)
+    if not os.path.exists(directory):
+        raise RuntimeError("No such post")
+
+    title_post_path = os.path.join(directory, TITLE_PATH)
+    async with aiofiles.open(title_post_path, mode='r') as f:
+        title = await f.read()
+
+    markdown_post_path = os.path.join(directory, MARKDOWN_PATH)
+    async with aiofiles.open(markdown_post_path, mode='r') as f:
+        contents = await f.read()
+
+    return (title, contents)
+
+
 async def make_a_post(data):
     logger.info("make_a_post")
     title = data['title']
