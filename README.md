@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/vrutkovs/mikulov.svg?branch=master)](https://travis-ci.org/vrutkovs/mikulov)
 
 Mikulov is a minimalistic file-based self-hosted anonymous publishing platform.
+Think self-hosted https://telegra.ph
 
 Try it out on http://mikulov.aracan.ga/
 

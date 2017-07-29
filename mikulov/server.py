@@ -5,6 +5,7 @@ import jinja2
 import logging
 import sys
 import backend
+import os
 
 
 root = logging.getLogger()
@@ -45,8 +46,8 @@ async def display_post(request):
             'title': title,
             'contents': contents
         }
-    except Exception:
-        raise web.HTTPNotFound()
+    except backend.NoSuchPost:
+        raise web.HTTPNotFound(app=app)
 
 
 @aiohttp_jinja2.template('delete.jinja2')
@@ -55,12 +56,39 @@ async def delete_post(request):
     digest = request.match_info['digest']
     slug = request.match_info['slug']
     token = request.match_info['token']
-    if await backend.is_valid_token(digest, slug, token):
-        title, contents = await backend.delete_post(digest, slug)
-        return {'title': title, 'contents': contents}
-    else:
-        raise web.HTTPFound('/{digest}-{slug}'.format(digest=digest, slug=slug))
+    try:
+        if await backend.is_valid_token(digest, slug, token):
+            title, contents = await backend.delete_post(digest, slug)
+            return {'title': title, 'contents': contents}
+        else:
+            raise web.HTTPFound('/{digest}-{slug}'.format(digest=digest, slug=slug))
+    except backend.NoSuchPost:
+        raise web.HTTPNotFound(app=app)
 
+
+@aiohttp_jinja2.template('404.jinja2', status=404)
+async def handle_404(request):
+    return {}
+
+
+def error_pages(overrides):
+    async def middleware(app, handler):
+        async def middleware_handler(request):
+            try:
+                response = await handler(request)
+                override = overrides.get(response.status)
+                if override is None:
+                    return response
+                else:
+                    return await override(request, response)
+            except web.HTTPException as ex:
+                override = overrides.get(ex.status)
+                if override is None:
+                    raise
+                else:
+                    return await override(request)
+        return middleware_handler
+    return middleware
 
 
 debug = 'DEBUG' in os.environ.keys()
@@ -72,5 +100,8 @@ app.router.add_route('*', '/', root)
 app.router.add_route('POST', '/post', new_post)
 app.router.add_route('GET', '/{digest}-{slug}', display_post)
 app.router.add_route('GET', '/{digest}-{slug}/{token}/delete', delete_post)
+
+error_middleware = error_pages({404: handle_404})
+app.middlewares.append(error_middleware)
 
 web.run_app(app)

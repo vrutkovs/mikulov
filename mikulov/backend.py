@@ -26,6 +26,10 @@ class PostAlreadyExists(Exception):
     pass
 
 
+class NoSuchPost(Exception):
+    pass
+
+
 async def post_digest(title, text):
     m = hashlib.sha256()
     m.update(bytes(title, 'utf-8'))
@@ -100,7 +104,7 @@ async def get_post_directory(digest, slug):
     url_part = "{0}-{1}".format(digest, slug)
     directory = os.path.join(POSTS_PATH, url_part)
     if not os.path.exists(directory):
-        raise RuntimeError("No such post")
+        raise NoSuchPost()
     return directory
 
 
