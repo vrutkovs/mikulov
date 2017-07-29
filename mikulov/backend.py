@@ -20,5 +20,5 @@ async def make_a_post(data):
     logger.info("make_a_post")
     return (
         "wubbadubbadubdubs",
-        "/1234-test-post"
+        "1234-test-post"
     )
